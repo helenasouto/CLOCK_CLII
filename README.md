@@ -45,7 +45,7 @@ Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](./LIC
 
 ## 👤 Autoria
 
-Desenvolvido por [Seu Nome], como parte da disciplina de **Circuitos Lógicos 2**.
+Desenvolvido por Camila Nóbrega, Helena Souto, Marina Carvalho, Maria Júlia Leonella e Thaynara Magno, como parte da disciplina de **Circuitos Lógicos 2**.
 
 ---
 
