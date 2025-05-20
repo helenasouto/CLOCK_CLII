@@ -1,0 +1,52 @@
+`timescale 1ns/1ns // Define a escala de tempo (1ns de precisão, 1ns de passo)
+
+module topo_tb;
+
+    // Sinais de entrada
+    logic clock;
+    logic reset;
+
+    // Sinais de saída
+    logic [6:0] s_lsd;
+    logic [6:0] s_msd;
+    logic [6:0] m_lsd;
+    logic [6:0] m_msd;
+    logic [6:0] h_lsd;
+    logic [6:0] h_msd;
+
+    // Instância do módulo topo
+    topo dut (
+        .clock(clock),
+        .reset(reset),
+        .s_lsd(s_lsd),
+        .s_msd(s_msd),
+        .m_lsd(m_lsd),
+        .m_msd(m_msd),
+        .h_lsd(h_lsd),
+        .h_msd(h_msd)
+    );
+
+    // Geração do clock (50 MHz)
+    initial begin
+        clock = 0;
+        forever #10 clock = ~clock; // Inverte o clock a cada 10 ns (50 MHz)
+    end
+
+    // Geração do reset
+    initial begin
+        reset = 1; // Ativa o reset
+        #100;      // Mantém o reset ativo por 100 ns
+        reset = 0; // Desativa o reset
+    end
+
+    // Monitoramento das saídas
+    initial begin
+        $monitor("Time: %0t | Reset: %b | Horas: %d%d | Minutos: %d%d | Segundos: %d%d",
+                 $time, reset, h_msd, h_lsd, m_msd, m_lsd, s_msd, s_lsd);
+
+        // Simulação por um tempo suficiente para ver o comportamento
+        #10000000; // Simula por 10.000.000 ns (10 ms)
+        $stop;     // Para a simulação
+    end
+
+endmodule

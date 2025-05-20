@@ -1,0 +1,9 @@
+module maq_m (
+    input  logic maqm_clock,          // Clock de 50 MHz
+    input  logic maqm_reset,          // Sinal de reset
+    input  logic maqm_enable,         // Pulso de 1 Hz
+    input  logic maqm_incremento,     // Pulso a cada minuto
+    output logic [3:0] maqm_lsd,      // Unidades de minutos (BCD)
+    output logic [2:0] maqm_msd,      // Dezenas de minutos (BCD)
+    output logic maqm_incrementahora  // Pulso a cada hora
+);

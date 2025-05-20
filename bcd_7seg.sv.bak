@@ -1,0 +1,22 @@
+module bcd_7seg (
+    input  logic [3:0] bcd_bcd_in,      // Entrada BCD (4 bits)
+    output logic [6:0] bcd_display_out  // Saída para 7 segmentos (A, B, C, D, E, F, G)
+);
+
+    always_comb begin
+        case (bcd_bcd_in)
+            4'd0: bcd_display_out = 7'b1111110; // 0
+            4'd1: bcd_display_out = 7'b0110000; // 1
+            4'd2: bcd_display_out = 7'b1101101; // 2
+            4'd3: bcd_display_out = 7'b1111001; // 3
+            4'd4: bcd_display_out = 7'b0110011; // 4
+            4'd5: bcd_display_out = 7'b1011011; // 5
+            4'd6: bcd_display_out = 7'b1011111; // 6
+            4'd7: bcd_display_out = 7'b1110000; // 7
+            4'd8: bcd_display_out = 7'b1111111; // 8
+            4'd9: bcd_display_out = 7'b1111011; // 9
+            default: bcd_display_out = 7'b0000000; // Apaga o display para valores inválidos
+        endcase
+    end
+
+endmodule

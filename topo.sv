@@ -1,0 +1,99 @@
+module topo (
+    input  logic clock,          // Sinal de clock de 50 MHz
+    input  logic reset,          // Sinal de reset
+    output logic [6:0] s_lsd,    // Unidades de segundos (7 segmentos)
+    output logic [6:0] s_msd,    // Dezenas de segundos (7 segmentos)
+    output logic [6:0] m_lsd,    // Unidades de minutos (7 segmentos)
+    output logic [6:0] m_msd,    // Dezenas de minutos (7 segmentos)
+    output logic [6:0] h_lsd,    // Unidades de horas (7 segmentos)
+    output logic [6:0] h_msd,     // Dezenas de horas (7 segmentos)
+
+);
+
+    // Sinais internos
+    logic enable1hz;             // Pulso de 1 Hz
+    logic incrementa_minuto;     // Pulso a cada minuto
+    logic incrementa_hora;       // Pulso a cada hora
+    logic [3:0] bcd_s_lsd;       // Unidades de segundos (BCD)
+    logic [2:0] bcd_s_msd;       // Dezenas de segundos (BCD)
+    logic [3:0] bcd_m_lsd;       // Unidades de minutos (BCD)
+    logic [2:0] bcd_m_msd;       // Dezenas de minutos (BCD)
+    logic [3:0] bcd_h_lsd;       // Unidades de horas (BCD)
+    logic [1:0] bcd_h_msd;       // Dezenas de horas (BCD)
+
+    // Instância do divisor de clock (1 Hz)
+    enable_1hz meuhabilitador (
+        .enable_clock(clock),
+        .enable_reset(reset),
+        .enable_pulseout(enable1hz)
+    );
+
+    // Instância do contador de segundos
+    maq_s maqs_display_s (
+        .maqs_clock(clock),
+        .maqs_reset(reset),
+        .maqs_enable(enable1hz),
+        .maqs_lsd(bcd_s_lsd),
+        .maqs_msd(bcd_s_msd),
+        .maqs_incrementa_min(incrementa_minuto)
+    );
+
+    // Decodificador de 7 segmentos para unidades de segundos
+    bcd_7seg display_s_lsd (
+        .bcd_bcd_in(bcd_s_lsd),
+        .bcd_display_out(s_lsd)
+    );
+
+    // Decodificador de 7 segmentos para dezenas de segundos
+    bcd_7seg display_s_msd (
+        .bcd_bcd_in({1'b0, bcd_s_msd}),
+        .bcd_display_out(s_msd)
+    );
+
+    // Instância do contador de minutos
+    maq_m maqm_display_m (
+        .maqm_clock(clock),
+        .maqm_reset(reset),
+        .maqm_enable(enable1hz),
+        .maqm_incremento(incrementa_minuto),
+        .maqm_lsd(bcd_m_lsd),
+        .maqm_msd(bcd_m_msd),
+        .maqm_incrementa_hora(incrementa_hora)
+    );
+
+    // Decodificador de 7 segmentos para unidades de minutos
+    bcd_7seg display_m_lsd (
+        .bcd_bcd_in(bcd_m_lsd),
+        .bcd_display_out(m_lsd)
+    );
+
+    // Decodificador de 7 segmentos para dezenas de minutos
+    bcd_7seg display_m_msd (
+        .bcd_bcd_in({1'b0, bcd_m_msd}),
+        .bcd_display_out(m_msd)
+    );
+
+    // Instância do contador de horas
+    maq_h maqh_display_h (
+        .maqh_clock(clock),
+        .maqh_reset(reset),
+        .maqh_enable(enable1hz),
+		  .maqh_incremento_min (incrementa_hora),
+		  .maqh_incremento_sec (incrementa_minuto),
+        .maqh_lsd(bcd_h_lsd),
+        .maqh_msd(bcd_h_msd)
+    );
+
+    // Decodificador de 7 segmentos para unidades de horas
+    bcd_7seg display_h_lsd (
+        .bcd_bcd_in(bcd_h_lsd),
+        .bcd_display_out(h_lsd)
+    );
+
+    // Decodificador de 7 segmentos para dezenas de horas
+    bcd_7seg display_h_msd (
+        .bcd_bcd_in({2'b00, bcd_h_msd}),
+        .bcd_display_out(h_msd)
+    );
+
+endmodule
